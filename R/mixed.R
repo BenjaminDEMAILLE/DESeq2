@@ -31,7 +31,10 @@
 #' The standard deviation of each random effect is stored in
 #' \code{mcols(object)} in columns starting with \code{randomSD_}, and
 #' \code{mcols(object)$betaConv} is \code{FALSE} for genes where
-#' \code{glmer} failed or reported a convergence problem.
+#' \code{glmer} failed or reported a convergence problem. As with very
+#' low counts in one group \code{glmer} can return extreme coefficients
+#' with small standard errors, the Wald p-value is set to \code{NA} for
+#' coefficients of 30 or more in absolute value on the log2 scale.
 #'
 #' @param object a DESeqDataSet with size factors and dispersion estimates,
 #' and a design containing the fixed effects only
@@ -191,6 +194,10 @@ nbinomMixedWaldTest <- function(object, random, control=NULL, quiet=FALSE,
   WaldStatistic <- betaMatrix/betaSE
   colnames(WaldStatistic) <- paste0("WaldStatistic_", modelMatrixNames)
   WaldPvalue <- 2*pnorm(abs(WaldStatistic), lower.tail=FALSE)
+  # with very low counts in one group, glmer can return coefficients
+  # beyond the range fitNbinomGLMsOptim() treats as unstable (30 on the
+  # log2 scale) with a deceptively small standard error: no p-value there
+  WaldPvalue[abs(betaMatrix) >= 30] <- NA
   colnames(WaldPvalue) <- paste0("WaldPvalue_", modelMatrixNames)
   covIdx <- which(covUpper, arr.ind=TRUE)
   colnames(covMatrix) <- paste0("mixedCov_", covIdx[,1], "_", covIdx[,2])
