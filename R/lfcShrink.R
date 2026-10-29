@@ -180,6 +180,10 @@ lfcShrink <- function(dds, coef, contrast, res,
   if (!is.null(betaPrior) && betaPrior) {
     stop("lfcShrink() should be used downstream of DESeq() with betaPrior=FALSE (the default)")
   }
+  if (!is.null(attr(dds, "mixedRandom")) && type != "ashr") {
+    stop("for results of nbinomMixedWaldTest(), use type='ashr':
+'apeglm' and 'normal' refit a model without the random effects")
+  }
   stopifnot(length(lfcThreshold) == 1 && lfcThreshold >= 0)
   resultsNamesDDS <- resultsNames(dds)
   # we can run apeglm without running nbinomWaldTest()

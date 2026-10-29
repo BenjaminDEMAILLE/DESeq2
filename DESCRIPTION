@@ -29,7 +29,7 @@ Depends: S4Vectors (>= 0.23.18), IRanges, GenomicRanges,
     SummarizedExperiment (>= 1.1.6)
 Suggests: testthat, knitr, rmarkdown, vsn, pheatmap, RColorBrewer,
     apeglm, ashr, tximport, tximeta, tximportData, readr, pbapply,
-    airway, glmGamPoi, BiocManager
+    airway, glmGamPoi, BiocManager, lme4, MASS, reformulas
 LinkingTo: Rcpp, RcppArmadillo
 URL: https://github.com/thelovelab/DESeq2
 biocViews: Sequencing, RNASeq, ChIPSeq, GeneExpression, Transcription,

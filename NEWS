@@ -1,3 +1,17 @@
+CHANGES IN VERSION 1.53.7
+-------------------------
+
+  o New function nbinomMixedWaldTest() fits, for each gene, a
+    negative binomial GLMM with lme4::glmer, using the fixed effects
+    of design(object), random effects given as e.g.
+    random = ~ (1 | individual), and the size factors and dispersion
+    estimates of the DESeqDataSet. Results are stored as for
+    nbinomWaldTest(), so results(), resultsNames(), summary() and
+    lfcShrink(type="ashr") work as usual; contrasts use the stored
+    covariance matrix of the coefficients. Intended for comparisons
+    between individuals with repeated samples per individual,
+    including partially paired designs. lme4 and MASS are suggested.
+
 CHANGES IN VERSION 1.53.3
 -------------------------
 

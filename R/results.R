@@ -654,6 +654,7 @@ resultsNames <- function(object) {
 #' @rdname results
 #' @export
 removeResults <- function(object) {
+  attr(object, "mixedRandom") <- NULL
   resCols <- mcols(mcols(object))$type == "results"
   if (sum(resCols,na.rm=TRUE) > 0) {
     mcols(object) <- mcols(object)[,-which(resCols),drop=FALSE]
@@ -794,6 +795,10 @@ getContrast <- function(object, contrast, useT=FALSE, minmu) {
   }
   if (is.null(attr(object,"modelMatrix"))) {
     stop("was expecting a model matrix stored as an attribute of the DESeqDataSet")
+  }
+  # results of nbinomMixedWaldTest(): use the stored covariance matrices
+  if (!is.null(attr(object, "mixedRandom"))) {
+    return(getContrastMixed(object, contrast))
   }
   modelMatrix <- attr(object, "modelMatrix")
   
