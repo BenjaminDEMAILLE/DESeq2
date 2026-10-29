@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.53.7
+-------------------------
+
+  o Vignette: in the section on individuals nested within groups,
+    explain that between-individual comparisons with repeated
+    samples per individual need a random effect, which DESeq2 does
+    not fit, and point to limma, dream and glmmSeq.
+
 CHANGES IN VERSION 1.53.3
 -------------------------
 

@@ -2375,6 +2375,40 @@ different across group:
 results(dds, contrast=list("grpY.cndB","grpX.cndB"))
 ``` 
 
+Note that the group main effect (`grpY`, the difference between
+groups Y and X in condition A) cannot be tested while controlling
+for the individuals: each individual belongs to only one group, so
+this is a comparison *between* individuals. The same holds for designs
+where only some individuals contribute several samples, for example
+several tissues from the same animals, while other individuals
+contribute a single sample. A fixed effect for the individual then
+either makes the group effect inestimable (`~ ind + grp`) or absorbs
+the individuals with a single sample, which no longer contribute to
+the comparison. Accounting for repeated samples in a between-individual
+comparison requires a random effect for the individual, which DESeq2
+does not fit. Options include `duplicateCorrelation` in
+[limma](http://bioconductor.org/packages/limma),
+*dream* in
+[variancePartition](http://bioconductor.org/packages/variancePartition),
+or a negative binomial mixed model, for example with the CRAN package
+[glmmSeq](https://CRAN.R-project.org/package=glmmSeq), which can take
+the size factors and dispersion estimates from a *DESeqDataSet*:
+
+```{r groupeffect5, eval=FALSE}
+# design(dds) holds the fixed effects only, e.g. ~ cnd + grp
+dds <- estimateSizeFactors(dds)
+dds <- estimateDispersions(dds)
+fit <- glmmSeq::glmmSeq(~ cnd + grp + (1 | ind),
+                        countdata=counts(dds),
+                        metadata=as.data.frame(colData(dds)),
+                        sizeFactors=sizeFactors(dds),
+                        dispersion=setNames(dispersions(dds), rownames(dds)))
+``` 
+
+Here the dispersion is estimated without the random effect, so it may
+also absorb part of the variation between individuals, which makes the
+test somewhat conservative.
+
 ### Levels without samples
 
 The base R function for creating model matrices will produce a column
